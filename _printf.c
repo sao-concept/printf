@@ -3,73 +3,73 @@
 #include "main.h"
 
 /**
-* _printf -This function prints a string formatted
-* according to the format string.
-* @format: The format string containing the
-* conversion specifiers.
-*
-* Return: The number of characters printed.
-*/
+ * write_char - Writes a single character to the standard output.
+ * @c: The character to be written.
+ * Return: The number of characters written (1).
+ */
+static int write_char(char c)
+{
+	return (write(1, &c, 1));
+}
+/**
+ * write_str - Writes a string to the standard output.
+ * @str: The string to be written.
+ * Return: The number of characters written.
+ */
+static int write_str(const char *str)
+{
+	int len = 0;
+
+	while (str[len])
+		len++;
+
+	return (write(1, str, len));
+}
+/**
+ * _printf - This function prints a formatted
+ * string with conversion specifiers.
+ * @format: The format string containing the conversion specifiers.
+ * Return: The number of characters printed.
+ */
 int _printf(const char *format, ...)
 {
-/* variable to loop through the number of characters */
-int idx = 0;
-/* variable to hold the number of characters */
-int val_ret = 0;
-/* counter variable to store the total number */
-int total_chars = 0;
-/* va_list to iterate through the unnamed arguments */
-va_list argList;
+	int idx = 0, total_chars = 0;
+	va_list argList;
+	int (*funcPtr)(va_list);
 
-/* Initialize the va_list and start iterating arguments */
-va_start(argList, format);
+	if (format == NULL)
+		return (-1);
 
-/* Function pointer */
-int (*funcPtr)(va_list);
+	va_start(argList, format);
 
-if (format == NULL)
-return (-1);
+	while (format[idx])
+	{
+		if (format[idx] != '%')
+		{
+			total_chars += write_char(format[idx]);
+			idx++;
+			continue;
+		}
 
-while (format[idx])
-{
-/* Check if the character is not '%' */
-if (format[idx] != '%')
-{
-val_ret = write(1, &format[idx], 1);
-total_chars += val_ret;
-idx++;
-continue;
+		funcPtr = _spec_checker(&format[idx + 1]);
+		if (funcPtr != NULL)
+		{
+			total_chars += funcPtr(argList);
+			idx += 2;
+			continue;
+		}
+
+		if (format[idx + 1] == '\0')
+		{
+			total_chars += write_char(format[idx]);
+			break;
+		}
+		else
+		{
+			total_chars += write_str(&format[idx]);
+			idx += 2;
+		}
+	}
+	va_end(argList);
+	return (total_chars);
 }
-
-/* Check for valid format specifier */
-funcPtr = _spec_checker(&format[idx + 1]);
-if (funcPtr != NULL)
-{
-val_ret = funcPtr(argList);
-total_chars += val_ret;
-idx += 2;
-continue;
-}
-
-/* Handle invalid format specifier */
-if (format[idx + 1] == '\0')
-{
-/* Write just the '%' character */
-val_ret = write(1, &format[idx], 1);
-total_chars += val_ret;
-break;
-}
-else
-{
-/* Write both '%' and the next character */
-val_ret = write(1, &format[idx], 2);
-total_chars += val_ret;
-idx += 2;
-}
-}
-
-/* Free the va_list and return total characters written */
-va_end(argList);
-return (total_chars);
-}
-
