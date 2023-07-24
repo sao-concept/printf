@@ -1,75 +1,47 @@
-#include <stdarg.h>
-#include <unistd.h>
 #include "main.h"
 
 /**
-* write_char - Writes a single character to the standard output.
-* @c: The character to be written.
-* Return: The number of characters written (1).
-*/
-static int write_char(char c)
-{
-return (write(1, &c, 1));
-}
-/**
-* write_str - Writes a string to the standard output.
-* @str: The string to be written.
-* Return: The number of characters written.
-*/
-static int write_str(const char *str)
-{
-int len = 0;
-
-while (str[len])
-len++;
-
-return (write(1, str, len));
-}
-/**
-* _printf - This function prints a formatted
-* string with conversion specifiers.
-* @format: The format string containing the conversion specifiers.
-* Return: The number of characters printed.
-*/
+ * _printf - produces output according to a format
+ * @format: format string containing the characters and the specifiers
+ * Description: this function will call the obtain_printer() function that will
+ * determine which printing function to call depending on the conversion
+ * specifiers contained into format string
+ * Return: length of the formatted output string
+ */
 int _printf(const char *format, ...)
 {
-int idx = 0, total_chars = 0;
-va_list argList;
-int (*funcPtr)(va_list);
+	int (*pfunc)(va_list, flagContainer_t *);
+	const char *p;
+	va_list arguments;
+	flagContainer_t flags = {0, 0, 0};
 
-if (format == NULL)
-return (-1);
+	register int count = 0;
 
-va_start(argList, format);
-
-while (format[idx])
-{
-if (format[idx] != '%')
-{
-total_chars += write_char(format[idx]);
-idx++;
-continue;
-}
-
-funcPtr = _spec_checker(&format[idx + 1]);
-if (funcPtr != NULL)
-{
-total_chars += funcPtr(argList);
-idx += 2;
-continue;
-}
-
-if (format[idx + 1] == '\0')
-{
-total_chars += write_char(format[idx]);
-break;
-}
-else
-{
-total_chars += write_str(&format[idx]);
-idx += 2;
-}
-}
-va_end(argList);
-return (total_chars);
+	va_start(arguments, format);
+	if (!format || (format[0] == '%' && !format[1]))
+		return (-1);
+	if (format[0] == '%' && format[1] == ' ' && !format[2])
+		return (-1);
+	for (p = format; *p; p++)
+	{
+		if (*p == '%')
+		{
+			p++;
+			if (*p == '%')
+			{
+				count += put_character('%');
+				continue;
+			}
+			while (fetch_flag(*p, &flags))
+				p++;
+			pfunc = obtain_printer(*p);
+			count += (pfunc)
+				? pfunc(arguments, &flags)
+				: _printf("%%%c", *p);
+		} else
+			count += put_character(*p);
+	}
+	put_character(-1);
+	va_end(arguments);
+	return (count);
 }
