@@ -1,49 +1,23 @@
 #include "main.h"
-#include <stdarg.h>
-#include <unistd.h>
 
 /**
-* _int_out - Convert an integer to decimal and print it to standard output.
-* @argList: Variadic argument list.
-*
-* Return: Number of characters written (success).
-*/
-int _int_out(va_list argList)
+ * print_integer - prints an integer
+ * @list: va_list of arguments from _printf
+ * @flags: pointer to the struct flagContainer determining
+ * if a flag is passed to _printf
+ * Return: number of char printed
+ */
+int print_integer(va_list list, flagContainer_t *flags)
 {
-int idx = 0;
-int count = 0;
-int num;
-int numArr[10];
-char charElem[1];
+	int n = va_arg(list, int);
+	int res = count_digit(n);
 
-/* Collect integer value from variadic argument list */
-num = va_arg(argList, int);
-
-if (num == 0) /* Special case for handling zero */
-{
-charElem[0] = '0';
-count = write(1, charElem, 1);
-return (count);
+	if (flags->gap == 1 && flags->addition == 0 && n >= 0)
+		res += put_character(' ');
+	if (flags->addition == 1 && n >= 0)
+		res += put_character('+');
+	if (n <= 0)
+		res++;
+	print_number(n);
+	return (res);
 }
-
-/* Split collected numbers, then assign to numArr */
-while (num != 0)
-{
-numArr[idx] = (num % 10);
-num /= 10;
-if (num == 0)
-break;
-else
-idx++;
-}
-
-/* Convert each digit back to character and print */
-for (idx = 0; idx >= 0; idx--)
-{
-charElem[0] = ('0' + numArr[idx]);
-count = count + write(1, charElem, 1);
-}
-
-return (count);
-}
-

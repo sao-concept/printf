@@ -1,20 +1,14 @@
 #include "main.h"
 
 /**
-* _symbol_out - Print '%' to standard output.
-* @argList: Variadic argument list (unused).
-*
-* Return: Number of characters written (success).
-*/
-int _symbol_out(va_list argList)
+ * print_percentage - prints a percent
+ * @list: va_list arguments from _printf
+ * @flags: pointer to the struct flagContainer in which we turn the flags on
+ * Return: number of char printed
+ */
+int print_percentage(va_list list, flagContainer_t *flags)
 {
-/* Cast argList to void to avoid unused parameter warning */
-(void) argList;
-
-/* Write the percent symbol '%' to standard output */
-write(1, "%", 1);
-
-/* Return the number of characters written, which is 1 in this case */
-return (1);
+	(void)list;
+	(void)flags;
+	return (put_character('%'));
 }
-

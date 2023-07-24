@@ -1,30 +1,20 @@
 #include "main.h"
 
 /**
-* _str_out - Prints a string of characters to the standard output.
-* @argList: Variadic argument list.
-*
-* Return: Number of characters written (success).
-*/
-int _str_out(va_list argList)
+ * print_str - loops through a string and prints
+ * every character
+ * @list: va_list arguments from _printf
+ * @flags: pointer to the struct flagContainer that determines
+ * if a flag is passed to _printf
+ * Return: number of char printed
+ */
+int print_str(va_list list, flagContainer_t *flags)
 {
-int idx = 0; /* Initialize 'idx' to 0 */
-int count = 0;
-char *strVal;
+	char *s = va_arg(list, char *);
 
-strVal = va_arg(argList, char *);
-if (strVal == NULL)
-{
-return (-1); /* Return -1 to indicate an error (NULL string) */
-}
+	(void)flags;
 
-while (strVal[idx])
-{
-count += write(1, &strVal[idx], 1);
-/* Increment 'count' for each character written */
-idx += 1;
+	if (!s)
+		s = "(null)";
+	return (put_string(s));
 }
-/* Return the total number of characters written */
-return (count);
-}
-

@@ -32,9 +32,9 @@ typedef struct formatHandler
 
 /* numericPrinter */
 int print_integer(va_list list, flagContainer_t *flags);
-void display_number(int num);
+void print_number(int num);
 int display_unsigned(va_list list, flagContainer_t *flags);
-int digit_counter(int integer);
+int count_digit(int integer);
 
 /* basePrinter */
 int display_hex(va_list list, flagContainer_t *flags);
