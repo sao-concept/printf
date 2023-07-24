@@ -1,47 +1,76 @@
-/* Header File */
+#ifndef TEAM_H
+#define TEAM_H
 
-#ifndef GROUP_MAIN_H
-#define GROUP_MAIN_H
-
-/* List of included libraries */
-#include <unistd.h>
-#include <stdarg.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 /**
-* struct printSpec - Defines a struct that acts as a printer specifier
-* @specifier: struct member for character
-* @function: struct member that points to corresponding output function
-*/
-typedef struct printSpec
+ * struct flagContainer - struct containing flags to "activate"
+ * when a flag specifier is passed to custom_printf()
+ * @addition: flag for the '+' character
+ * @gap: flag for the ' ' character
+ * @hashKey: flag for the '#' character
+ */
+typedef struct flagContainer
 {
-const char *ch;
-int (*funcList)(va_list);
-} func_specifier;
+	int addition;
+	int gap;
+	int hashKey;
+} flagContainer_t;
 
-/* List of function prototypes */
+/**
+ * struct formatHandler - struct to select the appropriate function
+ * based on the format specifier passed to custom_printf()
+ * @specifier: format specifier
+ * @handler: pointer to the right printing function
+ */
+typedef struct formatHandler
+{
+	char specifier;
+	int (*handler)(va_list ap, flagContainer_t *flags);
+} formatHandler_t;
 
-/* Function that produces output according to a format */
+/* numericPrinter */
+int print_integer(va_list list, flagContainer_t *flags);
+void display_number(int num);
+int display_unsigned(va_list list, flagContainer_t *flags);
+int digit_counter(int integer);
+
+/* basePrinter */
+int display_hex(va_list list, flagContainer_t *flags);
+int display_hex_big(va_list list, flagContainer_t *flags);
+int display_binary(va_list list, flagContainer_t *flags);
+int display_octal(va_list list, flagContainer_t *flags);
+
+/* converterFunc */
+char *convert_num(unsigned long int num, int base, int lower);
+
+/* _printf */
 int _printf(const char *format, ...);
 
-/* Function that checks the format specifier */
-int (*_spec_checker(const char*))(va_list);
+/* obtain_printer */
+int (*obtain_printer(char s))(va_list, flagContainer_t *);
 
-/* Function to handle character output */
-int _char_out(va_list);
+/* fetch_flag */
+int fetch_flag(char s, flagContainer_t *flags);
 
-/* Function to handle symbol(%) output */
-int _symbol_out(va_list);
+/* alphabeticPrinter */
+int print_str(va_list list, flagContainer_t *flags);
+int print_character(va_list list, flagContainer_t *flags);
 
-/* Function to handle string output */
-int _str_out(va_list);
+/* writeHelper */
+int put_character(char c);
+int put_string(char *str);
 
-/* Function to output integers */
-int _dec_out(va_list);
+/* customPrints */
+int display_rot13_string(va_list list, flagContainer_t *flags);
+int display_reversed_string(va_list list, flagContainer_t *flags);
+int display_uppercase_S(va_list list, flagContainer_t *flags);
 
-/* Function to output integers */
-int _int_out(va_list);
+/* print_address */
+int print_memory_address(va_list list, flagContainer_t *flags);
 
+/* print_percent */
+int print_percentage(va_list list, flagContainer_t *flags);
 
-#endif /* GROUP_MAIN_H */
-
+#endif /* TEAM_H */

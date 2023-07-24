@@ -1,40 +1,40 @@
 #include "main.h"
 
 /**
-* _spec_checker -Checks for valid format specifier
-* and return corresponding function.
-* @specifier: The format specifier to check.
-*
-* Return: Pointer to the corresponding function, or NULL if not found.
-*/
-int (*_spec_checker(const char *specifier))(va_list)
+ * obtain_printer - selects the right printing function
+ * based on the conversion specifier passed to _printf
+ * @s: character that holds the conversion specifier
+ * Description: the function loops through the structs array
+ * handler_arr[] to find a match between the specifier passed to _printf
+ * and the first element of the struct, and then selects the appropriate
+ * printing function
+ * Return: a pointer to the matching printing function
+ */
+int (*obtain_printer(char s))(va_list, flagContainer_t *)
 {
-int idx = 0;
+	formatHandler_t handler_arr[] = {
+		{'i', print_integer},
+		{'s', print_str},
+		{'c', print_character},
+		{'d', print_integer},
+		{'u', display_unsigned},
+		{'x', display_hex},
+		{'X', display_hex_big},
+		{'b', display_binary},
+		{'o', display_octal},
+		{'R', display_rot13_string},
+		{'r', display_reversed_string},
+		{'S', display_uppercase_S},
+		{'p', print_memory_address},
+		{'%', print_percentage},
+		{'\0', NULL}
+		};
+	int totalFlags = sizeof(handler_arr) / sizeof(formatHandler_t) - 1;
 
-/* Define the func_specifier structure inside main.h file*/
-func_specifier funcArr[] = {
-{"%", _symbol_out},
-{"c", _char_out},
-{"d", _dec_out},  /* Use _int_out for %d */
-{"i", _int_out},  /* Use _int_out for %i */
-{"s", _str_out},
-{NULL, NULL}
-};
+	register int index;
 
-/* Validate specifier to avoid dereferencing NULL pointers */
-if (specifier == NULL)
-return (NULL);
-
-/* Loop to check for each function */
-while (funcArr[idx].ch != NULL)
-{
-if (*(funcArr[idx].ch) == *specifier)
-{
-return (funcArr[idx].funcList);
+	for (index = 0; index < totalFlags; index++)
+		if (handler_arr[index].specifier == s)
+			return (handler_arr[index].handler);
+	return (NULL);
 }
-idx++;
-}
-
-return (NULL);
-}
-
