@@ -37,7 +37,11 @@ int _symbol_out(va_list);
 int _str_out(va_list);
 
 /* Function to output integers */
+int _dec_out(va_list);
+
+/* Function to output integers */
 int _int_out(va_list);
+
 
 #endif /* GROUP_MAIN_H */
 

@@ -3,16 +3,17 @@
 #include <unistd.h>
 
 /**
-* _int_out - Convert an integer to decimal and print it to standard output.
+* _dec_out - Convert an integer to decimal and print it to standard output.
 * @argList: Variadic argument list.
 *
 * Return: Number of characters written (success).
 */
-int _int_out(va_list argList)
+
+int _dec_out(va_list argList)
 {
-int idx = 0;
 int count = 0;
 int num;
+int idx = 0;
 int numArr[10];
 char charElem[1];
 
@@ -46,4 +47,3 @@ count = count + write(1, charElem, 1);
 
 return (count);
 }
-
