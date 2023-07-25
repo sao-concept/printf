@@ -1,0 +1,81 @@
+.TH _PRINTF 3 "25 July 2023" "Version 1.0" "_printf man page"
+
+.SH NAME
+_printf - format and print data
+
+.SH SYNOPSIS
+.B #include "main.h"
+.PP
+.BI "int _printf(const char " "*format, ..." ");
+
+.SH DESCRIPTION
+The _printf() function writes output to stdout (the standard output stream) under control of a format string that specifies how subsequent arguments (or arguments accessed via the variable-length arguments facilities of stdarg(3)) are converted for output.
+.PP
+The format string is a character string, beginning and ending in its initial shift state, if any. The format string is composed of zero or more directives: ordinary characters (not '%'), which are copied unchanged to the output stream; and conversion specifications, each of which results in fetching zero or more subsequent arguments.
+.PP
+Each conversion specification is introduced by the '%' character, followed by an optional flag ('+', ' ', '#'), followed by a conversion specifier character. The arguments must correspond properly (after type promotion) with the conversion specifier.
+
+.SH FLAGS
+The flag characters for conversion specifications are:
+.PP
+.B + : 
+the sign is always printed, even if the number is positive.
+.PP
+.B ' ' : 
+a blank is inserted before a positive number.
+.PP
+.B # : 
+this flag is used with o, x or X specifiers to prefix the output with 0, 0x or 0X respectively for values different than zero.
+
+.SH CONVERSION SPECIFIERS
+The conversion specifiers are:
+.PP
+.B 'i, d' : 
+for signed decimal integer.
+.PP
+.B 's' : 
+for string of characters.
+.PP
+.B 'c' : 
+for character.
+.PP
+.B 'u' : 
+for unsigned decimal integer.
+.PP
+.B 'x' : 
+for unsigned hexadecimal integer (lowercase).
+.PP
+.B 'X' : 
+for unsigned hexadecimal integer (uppercase).
+.PP
+.B 'b' : 
+for binary number.
+.PP
+.B 'o' : 
+for octal number.
+.PP
+.B 'R' : 
+for rot13'ed string.
+.PP
+.B 'r' : 
+for reversed string.
+.PP
+.B 'S' : 
+for string of non-printable characters (non-printable characters are displayed as \x followed by their ASCII code in hexadecimal).
+.PP
+.B 'p' : 
+for pointer address.
+.PP
+.B '%' : 
+for literal % character.
+
+.SH RETURN VALUE
+Upon successful return, the _printf function returns the count of printed characters. If the function fails, it returns -1.
+
+.SH AUTHORS
+Azeez Saka <saoconcept1@gmail.com>
+.br
+Favour Abalogu <favourabalogu@gmail.com>
+
+.SH "SEE ALSO"
+printf(3), fprintf(3), sprintf(3), snprintf(3), vprintf(3), vfprintf(3), vsprintf(3), vsnprintf(3)
